@@ -1,19 +1,20 @@
 const routes = require("express").Router();
-const userCtl = require("./controller/user");
+const userCtrl = require("./controller/user");
+const boardsCtrl = require("./controller/boards");
 
-routes.post("/user/signup", userCtl.signup);
-routes.post("/user/signin", userCtl.signin);
-routes.post("/user/signout", userCtl.signout);
+routes.post("/user/signup", userCtrl.signup);
+routes.post("/user/signin", userCtrl.signin);
+routes.post("/user/signout", userCtrl.signout);
 
-routes.get("/user", userCtl.get);
-routes.post("/user", userCtl.post);
-routes.put("/user", userCtl.put);
-routes.delete("/user", userCtl.delete);
+routes.get("/user", userCtrl.get);
+// routes.post("/user", userCtrl.post);
+routes.put("/user", userCtrl.put);
+routes.delete("/user", userCtrl.delete);
 
-routes.get("/boards");
-routes.post("/boards");
-routes.put("/boards");
-routes.delete("/boards");
+routes.get("/boards", boardsCtrl.get);
+routes.post("/boards", boardsCtrl.post);
+routes.put("/boards", boardsCtrl.put);
+routes.delete("/boards", boardsCtrl.delete);
 
 routes.get("/todos");
 routes.post("/todos");

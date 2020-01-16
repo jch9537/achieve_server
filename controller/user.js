@@ -9,13 +9,15 @@ module.exports = {
   },
   signout: (req, res) => {
     console.log(req.body);
+    res.status(200).send({ message: "로그아웃완료" });
   },
   get: (req, res) => {
     console.log(req.body);
+    res.status(200).send({ message: "유저 겟 완료" });
   },
-  post: (req, res) => {
-    console.log(req.body);
-  },
+  // post: (req, res) => {
+  //   console.log(req.body);
+  // },
   put: (req, res) => {
     console.log(req.body);
   },
