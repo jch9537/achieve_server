@@ -13,7 +13,10 @@ module.exports = {
   },
   get: (req, res) => {
     console.log(req.body);
-    res.status(200).send({ message: "유저 겟 완료" });
+    res.status(200).send({
+      body: { email: "emial_Data", user_id: "id_Data" },
+      message: "유저 겟 완료"
+    });
   },
   put: (req, res) => {
     console.log(req.body);
@@ -21,5 +24,6 @@ module.exports = {
   },
   delete: (req, res) => {
     console.log(req.body);
+    res.status(200).send({ message: "회원탈퇴완료" });
   }
 };
