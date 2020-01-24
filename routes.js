@@ -1,5 +1,5 @@
 const routes = require("express").Router();
-const userCtrl = require("./controller/user");
+const userCtrl = require("./controller/users");
 const boardsCtrl = require("./controller/boards");
 const todosCtrl = require("./controller/todos");
 const tasksCtrl = require("./controller/tasks");
