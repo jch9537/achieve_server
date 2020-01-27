@@ -9,3 +9,4 @@
 7. cors
 8. morgan
 9. mysql
+10. express-session

@@ -1,8 +1,9 @@
 const userModel = require("../model/userModel");
-
+//res를 return 하는 것과 하지 않는 것의 차이확인
+//let 과 const
 module.exports = {
   signup: (req, res) => {
-    console.log(req.body);
+    // console.log('회원가입 리퀘스트', req.body);
     let { name, email, password } = req.body;
     if (!(name && email && password)) {
       return res.status(400).send({
@@ -17,24 +18,24 @@ module.exports = {
       userModel.signup(arg, (err, result) => {
         if (err) {
           if (err.errno === 1062) {
-            // console.log("사인업에러:", err);
             return res.status(409).send({
               error: { status: 409, message: "이미 가입된 email입니다." }
             });
           } else {
+            // console.log('회원가입에러',err);
             return res.status(500).send({
-              error: { status: 500, message: "데이터베이스 에러발생" }
+              error: { status: 500, message: "서버오류" }
             });
           }
         } else {
-          // console.log("-------------");
           return res.status(201).send({ status: 201, message: "회원가입완료" });
         }
       });
     }
   },
   signin: (req, res) => {
-    // console.log(req.body);
+    // console.log('로그인 리퀘스트', req.body);
+    let session = req.session;
     let { email, password } = req.body;
     if (!(email && password)) {
       return res.status(400).send({
@@ -52,10 +53,10 @@ module.exports = {
       userModel.signin(arg, (err, result) => {
         //에러났을 때
         if (err) {
-          console.log("에러", err);
+          // console.log("로그인 에러", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "데이터베이스 에러발생" } });
+            .send({ error: { status: 500, message: "서버오류" } });
         } else {
           if (result === "No match Email") {
             return res.status(406).send({
@@ -66,32 +67,79 @@ module.exports = {
               error: { status: 400, message: "비밀번호가 일치하지 않습니다." }
             });
           } else {
-            //session에 아이디 부여 => session.user_id = result[0].id
-            return res.status(200).send({ message: "로그인 완료" });
+            // console.log("로그인 결과", result);
+            session.userId = result[0].id;
+            console.log("로그인 세션", session);
+            return res
+              .status(200)
+              .send({ userId: session.userId, message: "로그인 완료" });
           }
         }
       });
     }
   },
   signout: (req, res) => {
-    // session.user_id destroy하기
-    console.log(req.body);
-    res.status(200).send({ message: "로그아웃완료" });
+    console.log("로그아웃 리퀘스트 바디", req.body, "세션", req.session);
+    if (!req.session.userId) {
+      res
+        .status(401)
+        .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
+    } else {
+      req.session.destroy(err => {
+        if (err) {
+          res.status(500).send({ error: { status: 500, message: "서버오류" } });
+        } else {
+          res.status(200).send({ message: "로그아웃완료" });
+          // res.redirect("/"); redirect에대해 공부하기
+        }
+      });
+    }
   },
   get: (req, res) => {
-    console.log(req.body);
-    res.status(200).send({
-      body: { email: "emial_Data", user_id: "id_Data" },
-      message: "유저 겟 완료"
-    });
+    console.log("유저 겟 리퀘스트 바디", req.body, "세션", req.session);
+    if (!req.session.userId) {
+      alert("로그인을 해주세요");
+    } else {
+      let arg = req.session.userId;
+      userModel.get(arg, (err, result) => {
+        if (err) {
+          res.status(500).send({ error: { status: 500, message: "서버오류" } });
+        } else {
+          console.log("유저 겟 리절트", result);
+          res.status(200).send({
+            boards: ["보드정보들,...."],
+            message: "보드가져오기 완료"
+          });
+        }
+      });
+    }
   },
   put: (req, res) => {
-    console.log(req.body);
-    res.status(200).send({ message: "회원정보 수정완료" });
+    let { name, password } = req.body;
+    console.log("회원정보수정 리퀘스트 바디", req.body, "세션", req.session);
+    if (!req.session.userId) {
+      res
+        .status(401)
+        .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
+    } else if (!(name || password)) {
+      res.status(400).send({
+        message: "요청 내용이 없습니다."
+      });
+    } else {
+      let arg = req.body;
+      userModel.put(arg, (err, result) => {
+        if (err) {
+          res.status(500).send({ error: { status: 500, message: "서버오류" } });
+        } else {
+          res.status(200).send({ message: "회원정보 수정완료" });
+        }
+      });
+    }
   },
   delete: (req, res) => {
-    // session.user_id destroy하고 user정보 삭제
-    console.log(req.body);
+    console.log("회원탈퇴 리퀘스트 바디", req.body, "세션", req.session);
+    if (!req.session.userId) {
+    }
     res.status(200).send({ message: "회원탈퇴완료" });
   }
 };

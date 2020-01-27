@@ -36,8 +36,26 @@ module.exports = {
       }
     });
   },
-  signout: () => {},
-  get: () => {},
-  put: () => {},
+  // signout: () => {},
+  get: ({ id }, callback) => {},
+  put: ({ userId, name, password }, callback) => {
+    // let sql = `UPDATE users SET name='${name}', password='${password}' WHERE id=${userId}`;
+    let sql;
+    if (!name) {
+      sql = `UPDATE users SET password='${password}' WHERE id=${userId}`;
+    } else if (!password) {
+      sql = `UPDATE users SET name='${name}' WHERE id=${userId}`;
+    } else {
+      sql = `UPDATE users SET name='${name}', password='${password}' WHERE id=${userId}`;
+    }
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return callback(err, null);
+      } else {
+        console.log("수정결과", result);
+        return callback(null, result);
+      }
+    });
+  },
   delete: () => {}
 };
