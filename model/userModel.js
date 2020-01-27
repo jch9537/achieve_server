@@ -1,6 +1,5 @@
 const connection = require("../database/dbConnection");
 
-console.log("DB연결 : ", connection.state);
 module.exports = {
   signup: ({ name, email, password }, callback) => {
     const query = `INSERT INTO users (name, email, password) VALUES ( '${name}', '${email}','${password}');`;
@@ -37,25 +36,45 @@ module.exports = {
     });
   },
   // signout: () => {},
-  get: ({ id }, callback) => {},
+  get: ({ id }, callback) => {
+    let sql = `SELECT * FROM boards WHERE user_id=${id}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        console.log("겟에러결과", err);
+        return callback(err, null);
+      } else {
+        console.log("겟 결과", result);
+        return callback(null, result);
+      }
+    });
+  }, //get은 정보를 가져와야함
   put: ({ userId, name, password }, callback) => {
     // let sql = `UPDATE users SET name='${name}', password='${password}' WHERE id=${userId}`;
     let sql;
     if (!name) {
-      sql = `UPDATE users SET password='${password}' WHERE id=${userId}`;
+      sql = `UPDATE users SET password='${password}' WHERE id=${userId};`;
     } else if (!password) {
-      sql = `UPDATE users SET name='${name}' WHERE id=${userId}`;
+      sql = `UPDATE users SET name='${name}' WHERE id=${userId};`;
     } else {
-      sql = `UPDATE users SET name='${name}', password='${password}' WHERE id=${userId}`;
+      sql = `UPDATE users SET name='${name}', password='${password}' WHERE id=${userId};`;
     }
     connection.query(sql, (err, result) => {
       if (err) {
         return callback(err, null);
       } else {
-        console.log("수정결과", result);
+        // console.log("수정결과", result);
         return callback(null, result);
       }
     });
   },
-  delete: () => {}
+  delete: ({ id }, callback) => {
+    let sql = `DELETE FROM users WHERE id=${id};`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        return callback(err, null);
+      } else {
+        return callback(null, result);
+      }
+    });
+  }
 };
