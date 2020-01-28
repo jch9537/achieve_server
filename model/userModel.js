@@ -37,13 +37,11 @@ module.exports = {
   },
   // signout: () => {},
   get: ({ id }, callback) => {
-    let sql = `SELECT * FROM boards WHERE user_id=${id}`;
+    let sql = `SELECT * FROM users WHERE id=${id}`;
     connection.query(sql, (err, result) => {
       if (err) {
-        console.log("겟에러결과", err);
         return callback(err, null);
       } else {
-        console.log("겟 결과", result);
         return callback(null, result);
       }
     });
@@ -78,3 +76,16 @@ module.exports = {
     });
   }
 };
+
+// get: ({ id }, callback) => {
+//   let sql = `SELECT * FROM boards WHERE user_id=${id}`;
+//   connection.query(sql, (err, result) => {
+//     if (err) {
+//       console.log("겟에러결과", err);
+//       return callback(err, null);
+//     } else {
+//       console.log("겟 결과", result);
+//       return callback(null, result);
+//     }
+//   });
+// }, //get은 정보를 가져와야함

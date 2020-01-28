@@ -24,11 +24,11 @@ module.exports = {
           } else {
             // console.log('회원가입에러',err);
             return res.status(500).send({
-              error: { status: 500, message: "서버오류" }
+              error: { status: 500, message: "회원가입 실패" } //서버오류
             });
           }
         } else {
-          return res.status(201).send({ message: "회원가입완료" });
+          return res.status(201).send({ message: "회원가입 완료" });
         }
       });
     }
@@ -56,7 +56,7 @@ module.exports = {
           // console.log("로그인 에러", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "서버오류" } });
+            .send({ error: { status: 500, message: "로그인 실패" } }); //서버오류
         } else {
           if (result === "No match Email") {
             return res.status(406).send({
@@ -89,16 +89,15 @@ module.exports = {
         if (err) {
           return res
             .status(500)
-            .send({ error: { status: 500, message: "서버오류" } });
+            .send({ error: { status: 500, message: "로그아웃 실패" } }); //서버오류
         } else {
-          return res.status(200).send({ message: "로그아웃완료" });
+          return res.status(200).send({ message: "로그아웃 완료" });
           // res.redirect("/"); redirect에대해 공부하기
         }
       });
     }
   },
   get: (req, res) => {
-    console.log("유저 겟 리퀘스트 바디", req.body, "세션", req.session);
     if (!req.session.userId) {
       return res
         .status(401)
@@ -109,19 +108,11 @@ module.exports = {
       };
       userModel.get(arg, (err, result) => {
         if (err) {
-          console.log("유저 에러 리절트", result);
-          return res
-            .status(500)
-            .send({ error: { status: 500, message: "서버오류" } });
+          return res.status(500).send({
+            error: { status: 500, message: "회원정보 가져오기 실패" }
+          }); //서버오류
         } else {
-          console.log("유저 겟 리절트", result);
-          return res.status(200).send({
-            boards: [
-              { name: "보드1", id: 1 },
-              { name: "보드2", id: 2 }
-            ],
-            message: "보드가져오기 완료"
-          });
+          return res.status(200).send({ message: "회원정보가져오기 완료" });
         }
       });
     }
@@ -143,7 +134,7 @@ module.exports = {
         if (err) {
           return res
             .status(500)
-            .send({ error: { status: 500, message: "서버오류" } });
+            .send({ error: { status: 500, message: "회원정보 수정실패" } }); //서버오류
         } else {
           return res.status(200).send({ message: "회원정보 수정완료" });
         }
@@ -165,12 +156,42 @@ module.exports = {
           // console.log("에러결과", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "서버오류" } });
+            .send({ error: { status: 500, message: "회원탈퇴 실패" } }); //서버오류
         } else {
           // console.log("탈퇴결과", result);
-          return res.status(200).send({ message: "회원탈퇴완료" });
+          return res.status(200).send({ message: "회원탈퇴 완료" });
         }
       });
     }
   }
 };
+
+// get: (req, res) => {
+//   console.log("유저 겟 리퀘스트 바디", req.body, "세션", req.session);
+//   if (!req.session.userId) {
+//     return res
+//       .status(401)
+//       .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
+//   } else {
+//     let arg = {
+//       id: req.session.userId
+//     };
+//     userModel.get(arg, (err, result) => {
+//       if (err) {
+//         console.log("유저 에러 리절트", result);
+//         return res
+//           .status(500)
+//           .send({ error: { status: 500, message: "서버오류" } });
+//       } else {
+//         console.log("유저 겟 리절트", result);
+//         return res.status(200).send({
+//           boards: [
+//             { name: "보드1", id: 1 },
+//             { name: "보드2", id: 2 }
+//           ],
+//           message: "보드가져오기 완료"
+//         });
+//       }
+//     });
+//   }
+// },
