@@ -3,11 +3,14 @@ const userModel = require("../model/userModel");
 //let 과 const
 module.exports = {
   signup: (req, res) => {
-    // console.log('회원가입 리퀘스트', req.body);
+    // console.log("회원가입 리퀘스트", req.body);
     let { name, email, password } = req.body;
     if (!(name && email && password)) {
       return res.status(400).send({
-        message: "요청에 빠진내용을 확인해주세요. {name, email, password}"
+        error: {
+          status: 400,
+          message: "요청에 빠진내용을 확인해주세요. {name, email, password}"
+        }
       });
     } else {
       let arg = {
@@ -17,17 +20,18 @@ module.exports = {
       };
       userModel.signup(arg, (err, result) => {
         if (err) {
+          // console.log('회원가입에러',err);
           if (err.errno === 1062) {
             return res.status(409).send({
               error: { status: 409, message: "이미 가입된 email입니다." }
             });
           } else {
-            // console.log('회원가입에러',err);
             return res.status(500).send({
-              error: { status: 500, message: "회원가입 실패" } //서버오류
+              error: { status: 500, message: "회원가입 실패" }
             });
           }
         } else {
+          // console.log("회원가입 결과", result);
           return res.status(201).send({ message: "회원가입 완료" });
         }
       });
@@ -45,18 +49,16 @@ module.exports = {
         }
       });
     } else {
-      //session 추가
       let arg = {
         email: email,
         password: password
       };
       userModel.signin(arg, (err, result) => {
-        //에러났을 때
         if (err) {
           // console.log("로그인 에러", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "로그인 실패" } }); //서버오류
+            .send({ error: { status: 500, message: "로그인 실패" } });
         } else {
           if (result === "No match Email") {
             return res.status(406).send({
@@ -79,7 +81,7 @@ module.exports = {
     }
   },
   signout: (req, res) => {
-    // console.log("로그아웃 리퀘스트 바디", req.body, "세션", req.session);
+    // console.log("로그아웃 리퀘스트 바디", req.body);
     if (!req.session.userId) {
       return res
         .status(401)
@@ -89,7 +91,7 @@ module.exports = {
         if (err) {
           return res
             .status(500)
-            .send({ error: { status: 500, message: "로그아웃 실패" } }); //서버오류
+            .send({ error: { status: 500, message: "로그아웃 실패" } });
         } else {
           return res.status(200).send({ message: "로그아웃 완료" });
           // res.redirect("/"); redirect에대해 공부하기
@@ -98,6 +100,7 @@ module.exports = {
     }
   },
   get: (req, res) => {
+    // console.log("user 겟 리퀘스트", req.body);
     if (!req.session.userId) {
       return res
         .status(401)
@@ -108,36 +111,47 @@ module.exports = {
       };
       userModel.get(arg, (err, result) => {
         if (err) {
+          // console.log("user겟 에러 리절트", err);
           return res.status(500).send({
             error: { status: 500, message: "회원정보 가져오기 실패" }
-          }); //서버오류
+          });
         } else {
+          // console.log("user겟 결과", result);
           return res
             .status(200)
-            .send({ userInfo: result[0], message: "회원정보가져오기 완료" });
+            .send({ userInfo: result[0], message: "회원정보 가져오기 완료" });
         }
       });
     }
   },
   put: (req, res) => {
-    let { name, password } = req.body;
     // console.log("회원정보수정 리퀘스트 바디", req.body, "세션", req.session);
+    let { userId, name, password } = req.body;
     if (!req.session.userId) {
       return res
         .status(401)
         .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
     } else if (!(name || password)) {
       return res.status(400).send({
-        message: "수정한 내용이 없습니다."
+        error: {
+          status: 400,
+          message: "수정한 내용이 없습니다."
+        }
       });
     } else {
-      let arg = req.body;
+      let arg = {
+        id: Number(userId),
+        name: name,
+        password: password
+      };
       userModel.put(arg, (err, result) => {
         if (err) {
+          // console.log("회원정보 수정 에러 ", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "회원정보 수정실패" } }); //서버오류
+            .send({ error: { status: 500, message: "회원정보 수정실패" } });
         } else {
+          // console.log("회원정보 수정 결과", result);
           return res.status(200).send({ message: "회원정보 수정완료" });
         }
       });
@@ -167,33 +181,3 @@ module.exports = {
     }
   }
 };
-
-// get: (req, res) => {
-//   console.log("유저 겟 리퀘스트 바디", req.body, "세션", req.session);
-//   if (!req.session.userId) {
-//     return res
-//       .status(401)
-//       .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
-//   } else {
-//     let arg = {
-//       id: req.session.userId
-//     };
-//     userModel.get(arg, (err, result) => {
-//       if (err) {
-//         console.log("유저 에러 리절트", result);
-//         return res
-//           .status(500)
-//           .send({ error: { status: 500, message: "서버오류" } });
-//       } else {
-//         console.log("유저 겟 리절트", result);
-//         return res.status(200).send({
-//           boards: [
-//             { name: "보드1", id: 1 },
-//             { name: "보드2", id: 2 }
-//           ],
-//           message: "보드가져오기 완료"
-//         });
-//       }
-//     });
-//   }
-// },

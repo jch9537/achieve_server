@@ -2,40 +2,39 @@ const todoModel = require("../model/todoModel");
 
 module.exports = {
   get: (req, res) => {
-    // console.log('투두겟 리퀘스트', req.body);
+    // console.log("투두 겟 리퀘스트", req.body);
     if (!req.session.userId) {
       return res
         .status(401)
         .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
     } else {
       let arg = {
-        user_id: req.session.userId,
         board_id: Number(req.params.board_id)
       };
-      // console.log("투두겟 아규먼트", arg);
+      // console.log("todo 겟 아규먼트", arg);
       todoModel.get(arg, (err, result) => {
         if (err) {
           // console.log("투두겟 에러 리절트", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "투두 가져오기 실패" } });
+            .send({ error: { status: 500, message: "todo  가져오기 실패" } });
         } else {
-          console.log("투두겟 결과", result);
+          // console.log("todo겟 결과", result);
           if (!result.length) {
             return res.status(406).send({
-              error: { status: 406, message: "보드에 투두가 없습니다." }
+              error: { status: 406, message: "board에 todo가 없습니다." }
             });
           } else {
             return res
               .status(200)
-              .send({ todos: result, message: "투두가져오기 완료" });
+              .send({ todos: result, message: "todo가져오기 완료" });
           }
         }
       });
     }
   },
   post: (req, res) => {
-    // console.log("투두포스트 리퀘스트", req.body);
+    // console.log("todo포스트 리퀘스트", req.body);
     if (!req.session.userId) {
       return res
         .status(401)
@@ -43,69 +42,72 @@ module.exports = {
     } else {
       let arg = {
         board_id: req.body.board_id,
-        todo_name: req.body.newTodo
+        newTodo: req.body.newTodo
       };
       todoModel.post(arg, (err, result) => {
         if (err) {
-          // console.log("투두포스트  에러 리절트", err);
+          // console.log("todo포스트  에러", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "투두 가져오기 실패" } });
+            .send({ error: { status: 500, message: "todo생성 실패" } });
         } else {
-          console.log("투두포스트 결과", result);
+          // console.log("todo포스트 결과", result);
           return res
-            .status(200)
-            .send({ todos: result, message: "투두생성 완료" });
+            .status(201)
+            .send({ todos: result, message: "todo생성 완료" });
         }
       });
     }
   },
   put: (req, res) => {
-    // console.log("투두수정 리퀘스트", req.body);
+    // console.log("todo수정 리퀘스트", req.body);
     if (!req.session.userId) {
       return res
         .status(401)
         .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
     } else {
       let arg = {
-        todo_id: req.body.todo_id,
-        todo_name: req.body.changeTodo
+        todo_id: Number(req.body.todo_id),
+        changeTodo: req.body.changeTodo
       };
+      // console.log("todo수정 아규먼트", arg);
       todoModel.put(arg, (err, result) => {
         if (err) {
-          // console.log("투두수정 에러 리절트", err);
+          // console.log("todo수정 에러 리절트", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "투두 수정 실패" } });
+            .send({ error: { status: 500, message: "todo 수정 실패" } });
         } else {
-          console.log("투두수정 결과", result);
+          // console.log("todo수정 결과", result);
           return res.status(200).send({
             todo: result[0],
-            message: "투두수정 완료"
+            message: "todo수정 완료"
           });
         }
       });
     }
   },
   delete: (req, res) => {
-    // console.log("투두삭제 리퀘스트", req.body);
+    // console.log("todo삭제 리퀘스트", req.body);
     if (!req.session.userId) {
       return res
         .status(401)
         .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
     } else {
       let arg = {
-        board_id: req.body.board_id,
-        todo_id: req.body.todo_id
+        board_id: Number(req.body.board_id),
+        todo_id: Number(req.body.todo_id)
       };
+      // console.log("todo삭제 아규먼트", arg);
       todoModel.delete(arg, (err, result) => {
         if (err) {
-          // console.log("투두삭제 에러 리절트", err);
+          // console.log("todo삭제 에러 리절트", err);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "투두삭제 실패" } });
+            .send({ error: { status: 500, message: "todo삭제 실패" } });
         } else {
-          res.status(200).send({ todos: result, message: "todo수정 완료" });
+          // console.log("todo삭제 결과", result);
+          res.status(200).send({ todos: result, message: "todo삭제 완료" });
         }
       });
     }
