@@ -57,7 +57,14 @@ module.exports = {
       if (err) {
         return callback(err, null);
       } else {
-        return callback(null, result);
+        sql = `SELECT id, name FROM users WHERE id=${id};`;
+        connection.query(sql, (err, result) => {
+          if (err) {
+            callback(err, null);
+          } else {
+            return callback(null, result);
+          }
+        });
       }
     });
   },

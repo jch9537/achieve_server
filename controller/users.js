@@ -146,13 +146,19 @@ module.exports = {
       };
       userModel.put(arg, (err, result) => {
         if (err) {
-          // console.log("회원정보 수정 에러 ", err);
+          console.log("회원정보 수정 에러 ", err);
           return res
             .status(500)
             .send({ error: { status: 500, message: "회원정보 수정실패" } });
         } else {
-          // console.log("회원정보 수정 결과", result);
-          return res.status(200).send({ message: "회원정보 수정완료" });
+          console.log("회원정보 수정 결과", result);
+          if (!result.length) {
+            return res.status(200).send({ message: "회원정보 수정완료" });
+          } else {
+            return res
+              .status(200)
+              .send({ changeInfo: result[0], message: "회원정보 수정완료" });
+          }
         }
       });
     }
