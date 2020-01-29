@@ -112,7 +112,9 @@ module.exports = {
             error: { status: 500, message: "회원정보 가져오기 실패" }
           }); //서버오류
         } else {
-          return res.status(200).send({ message: "회원정보가져오기 완료" });
+          return res
+            .status(200)
+            .send({ userInfo: result[0], message: "회원정보가져오기 완료" });
         }
       });
     }

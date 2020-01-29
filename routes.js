@@ -13,11 +13,12 @@ routes.put("/user", userCtrl.put);
 routes.delete("/user", userCtrl.delete);
 
 routes.get("/boards", boardsCtrl.get);
+routes.get("/boards/:board_id", boardsCtrl.getOne);
 routes.post("/boards", boardsCtrl.post);
 routes.put("/boards", boardsCtrl.put);
 routes.delete("/boards", boardsCtrl.delete);
 
-routes.get("/todos", todosCtrl.get);
+routes.get("/todos/:board_id", todosCtrl.get);
 routes.post("/todos", todosCtrl.post);
 routes.put("/todos", todosCtrl.put);
 routes.delete("/todos", todosCtrl.delete);

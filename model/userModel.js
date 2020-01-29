@@ -37,7 +37,7 @@ module.exports = {
   },
   // signout: () => {},
   get: ({ id }, callback) => {
-    let sql = `SELECT * FROM users WHERE id=${id}`;
+    let sql = `SELECT id, name FROM users WHERE id=${id}`;
     connection.query(sql, (err, result) => {
       if (err) {
         return callback(err, null);

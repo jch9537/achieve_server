@@ -12,7 +12,7 @@ module.exports = {
         userId: req.session.userId
       };
       // console.log("아규먼트", arg);
-      boardsModel.getAll(arg, (err, result) => {
+      boardsModel.get(arg, (err, result) => {
         if (err) {
           // console.log("보드 에러 리절트", result);
           return res
@@ -23,6 +23,33 @@ module.exports = {
           return res.status(200).send({
             boards: result,
             message: "보드가져오기 완료"
+          });
+        }
+      });
+    }
+  },
+  getOne: (req, res) => {
+    // console.log("보드 겟 원 리퀘스트 바디", req.body, "세션", req.session);
+    if (!req.session.userId) {
+      return res
+        .status(401)
+        .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
+    } else {
+      let arg = {
+        board_id: req.params.board_id
+      };
+      console.log("보드겟 원 아규먼트", arg);
+      boardsModel.getOne(arg, (err, result) => {
+        if (err) {
+          return res.status(500).send({
+            error: { status: 500, message: "보드 하나 가져오기 실패" }
+          });
+        } else {
+          //가져올꺼 없는 것도 추가
+          console.log("보드 겟 원 리절트", result);
+          return res.status(200).send({
+            board: result[0],
+            message: "보드 하나 가져오기 완료"
           });
         }
       });
@@ -66,9 +93,8 @@ module.exports = {
         .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
     } else {
       let arg = {
-        userId: req.session.userId,
-        boardId: req.body.boardId,
-        boardName: req.body.changeBoard
+        board_id: req.body.board_id,
+        board_name: req.body.changeBoard
       };
       console.log("보드수정 아규먼트", arg);
       boardsModel.put(arg, (err, result) => {
@@ -80,7 +106,7 @@ module.exports = {
         } else {
           console.log("보드수정 결과", result);
           res.status(200).send({
-            boards: result,
+            board: result[0],
             message: "보드수정 완료"
           });
         }
