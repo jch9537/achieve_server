@@ -20,10 +20,16 @@ module.exports = {
             .status(500)
             .send({ error: { status: 500, message: "투두 가져오기 실패" } });
         } else {
-          // console.log("투두겟 결과", result);
-          return res
-            .status(200)
-            .send({ todos: result, message: "투두가져오기 완료" });
+          console.log("투두겟 결과", result);
+          if (!result.length) {
+            return res.status(406).send({
+              error: { status: 406, message: "보드에 투두가 없습니다." }
+            });
+          } else {
+            return res
+              .status(200)
+              .send({ todos: result, message: "투두가져오기 완료" });
+          }
         }
       });
     }
@@ -46,7 +52,7 @@ module.exports = {
             .status(500)
             .send({ error: { status: 500, message: "투두 가져오기 실패" } });
         } else {
-          // console.log("투두포스트 결과", result);
+          console.log("투두포스트 결과", result);
           return res
             .status(200)
             .send({ todos: result, message: "투두생성 완료" });
@@ -67,14 +73,15 @@ module.exports = {
       };
       todoModel.put(arg, (err, result) => {
         if (err) {
-          console.log("투두수정 에러 리절트", err);
+          // console.log("투두수정 에러 리절트", err);
           return res
             .status(500)
             .send({ error: { status: 500, message: "투두 수정 실패" } });
         } else {
+          console.log("투두수정 결과", result);
           return res.status(200).send({
             todo: result[0],
-            message: "todo수정 완료"
+            message: "투두수정 완료"
           });
         }
       });

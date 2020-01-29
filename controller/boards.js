@@ -38,7 +38,7 @@ module.exports = {
       let arg = {
         board_id: req.params.board_id
       };
-      console.log("보드겟 원 아규먼트", arg);
+      // console.log("보드겟 원 아규먼트", arg);
       boardsModel.getOne(arg, (err, result) => {
         if (err) {
           return res.status(500).send({
@@ -46,7 +46,7 @@ module.exports = {
           });
         } else {
           //가져올꺼 없는 것도 추가
-          console.log("보드 겟 원 리절트", result);
+          // console.log("보드 겟 원 리절트", result);
           return res.status(200).send({
             board: result[0],
             message: "보드 하나 가져오기 완료"
@@ -96,15 +96,15 @@ module.exports = {
         board_id: req.body.board_id,
         board_name: req.body.changeBoard
       };
-      console.log("보드수정 아규먼트", arg);
+      // console.log("보드수정 아규먼트", arg);
       boardsModel.put(arg, (err, result) => {
         if (err) {
-          console.log("보드수정 에러", err);
+          // console.log("보드수정 에러", err);
           return res
             .status(500)
             .send({ error: { status: 500, message: "보드수정 실패" } });
         } else {
-          console.log("보드수정 결과", result);
+          // console.log("보드수정 결과", result);
           res.status(200).send({
             board: result[0],
             message: "보드수정 완료"

@@ -23,7 +23,7 @@ routes.post("/todos", todosCtrl.post);
 routes.put("/todos", todosCtrl.put);
 routes.delete("/todos", todosCtrl.delete);
 
-routes.get("/tasks", tasksCtrl.get);
+routes.get("/tasks/:todo_id", tasksCtrl.get);
 routes.post("/tasks", tasksCtrl.post);
 routes.put("/tasks", tasksCtrl.put);
 routes.delete("/tasks", tasksCtrl.delete);
