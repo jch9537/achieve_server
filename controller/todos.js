@@ -19,17 +19,20 @@ module.exports = {
             .status(500)
             .send({ error: { status: 500, message: "todo  가져오기 실패" } });
         } else {
-          // console.log("todo겟 결과", result);
-          if (!result.length) {
-            return res.status(406).send({
-              error: { status: 406, message: "board에 todo가 없습니다." }
-            });
-          } else {
-            return res
+          //결과 없는 경우도 에러처리 안하는 것으로 처리 : 없는 것 자체가 에러로 보기 어려움
+          // if (!result.length) {
+          //     return res.status(406).send({
+          //         error: { status: 406, message: "board에 todo가 없습니다." }
+          //       });
+          //     } else {
+          return (
+            res
+              // console.log("todo겟 결과", result);
               .status(200)
-              .send({ todos: result, message: "todo가져오기 완료" });
-          }
+              .send({ todos: result, message: "todo가져오기 완료" })
+          );
         }
+        // }
       });
     }
   },

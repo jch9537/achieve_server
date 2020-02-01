@@ -111,27 +111,33 @@ module.exports = {
       };
       userModel.get(arg, (err, result) => {
         if (err) {
-          // console.log("user겟 에러 리절트", err);
+          console.log("user겟 에러 리절트", err);
           return res.status(500).send({
             error: { status: 500, message: "회원정보 가져오기 실패" }
           });
         } else {
-          // console.log("user겟 결과", result);
-          return res
-            .status(200)
-            .send({ userInfo: result[0], message: "회원정보 가져오기 완료" });
+          console.log("user겟 결과", result);
+          if (!result.length) {
+            return res.status(406).send({
+              error: { status: 406, message: "가입정보가 없습니다." }
+            });
+          } else {
+            return res
+              .status(200)
+              .send({ userInfo: result[0], message: "회원정보 가져오기 완료" });
+          }
         }
       });
     }
   },
   put: (req, res) => {
     // console.log("회원정보수정 리퀘스트 바디", req.body, "세션", req.session);
-    let { userId, name, password } = req.body;
+    let { id, newName, newPassword } = req.body;
     if (!req.session.userId) {
       return res
         .status(401)
         .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
-    } else if (!(name || password)) {
+    } else if (!(newName || newPassword)) {
       return res.status(400).send({
         error: {
           status: 400,
@@ -140,18 +146,18 @@ module.exports = {
       });
     } else {
       let arg = {
-        id: Number(userId),
-        name: name,
-        password: password
+        id: Number(id),
+        newName: newName,
+        newPassword: newPassword
       };
       userModel.put(arg, (err, result) => {
         if (err) {
-          console.log("회원정보 수정 에러 ", err);
+          // console.log("회원정보 수정 에러 ", err);
           return res
             .status(500)
             .send({ error: { status: 500, message: "회원정보 수정실패" } });
         } else {
-          console.log("회원정보 수정 결과", result);
+          // console.log("회원정보 수정 결과", result);
           if (!result.length) {
             return res.status(200).send({ message: "회원정보 수정완료" });
           } else {

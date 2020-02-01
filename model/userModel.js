@@ -44,14 +44,14 @@ module.exports = {
       }
     });
   },
-  put: ({ id, name, password }, callback) => {
+  put: ({ id, newName, newPassword }, callback) => {
     let sql;
-    if (!name) {
-      sql = `UPDATE users SET password='${password}' WHERE id=${id};`;
-    } else if (!password) {
-      sql = `UPDATE users SET name='${name}' WHERE id=${id};`;
+    if (!newName) {
+      sql = `UPDATE users SET password='${newPassword}' WHERE id=${id};`;
+    } else if (!newPassword) {
+      sql = `UPDATE users SET name='${newName}' WHERE id=${id};`;
     } else {
-      sql = `UPDATE users SET name='${name}', password='${password}' WHERE id=${id};`;
+      sql = `UPDATE users SET name='${newName}', password='${newPassword}' WHERE id=${id};`;
     }
     connection.query(sql, (err, result) => {
       if (err) {

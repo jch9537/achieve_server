@@ -17,14 +17,21 @@ module.exports = {
           // console.log("보드 에러 리절트", result);
           return res
             .status(500)
-            .send({ error: { status: 500, message: "board가져오기 실패" } });
+            .send({ error: { status: 500, message: "boards 가져오기 실패" } });
         } else {
-          // console.log("보드 겟 리절트", result);
+          //결과 없는 경우도 에러처리 안하는 것으로 처리 : 없는 것 자체가 에러로 보기 어려움
+          // if (!result.length) {
+          //     return res.status(406).send({
+          //         error: { status: 406, message: "생성한 boards가 없습니다." }
+          //       });
+          //     } else {
           return res.status(200).send({
+            // console.log("보드 겟 리절트", result);
             boards: result,
-            message: "board가져오기 완료"
+            message: "boards 가져오기 완료"
           });
         }
+        // }
       });
     }
   },
@@ -42,13 +49,13 @@ module.exports = {
       boardsModel.getOne(arg, (err, result) => {
         if (err) {
           return res.status(500).send({
-            error: { status: 500, message: "board 하나 가져오기 실패" }
+            error: { status: 500, message: "board 가져오기 실패" }
           });
         } else {
           // console.log("board 겟 원 리절트", result);
           return res.status(200).send({
             board: result[0],
-            message: "board 하나 가져오기 완료"
+            message: "board 가져오기 완료"
           });
         }
       });
