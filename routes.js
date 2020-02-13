@@ -4,6 +4,7 @@ const boardsCtrl = require("./controller/boards");
 const todosCtrl = require("./controller/todos");
 const tasksCtrl = require("./controller/tasks");
 
+routes.post("/user/checkEmail", userCtrl.checkEmail);
 routes.post("/user/signup", userCtrl.signup);
 routes.post("/user/signin", userCtrl.signin);
 routes.post("/user/signout", userCtrl.signout);

@@ -1,7 +1,46 @@
+const crypto = require("crypto");
 const userModel = require("../model/userModel");
 //res를 return 하는 것과 하지 않는 것의 차이확인
 //let 과 const
 module.exports = {
+  checkEmail: (req, res) => {
+    // console.log("이메일 중복확인 ", req.body);
+    if (!req.body.email) {
+      res.status(400).send({
+        error: {
+          status: 400,
+          message: "요청에 빠진내용을 확인해주세요 {email}."
+        }
+      });
+    } else {
+      let arg = {
+        email: req.body.email
+      };
+      userModel.checkEmail(arg, (err, result) => {
+        if (err) {
+          // console.log("이메일 중복에러", err);
+          res.status(500).send({
+            error: {
+              status: 500,
+              message: "이메일 중복확인 실패"
+            }
+          });
+        } else {
+          // console.log("이메일 중복결과 ", result);
+          if (!result.length) {
+            res.status(200).send({ message: "사용가능한 email입니다." });
+          } else {
+            res.status(409).send({
+              error: {
+                status: 409,
+                message: "이미 가입된 email입니다."
+              }
+            });
+          }
+        }
+      });
+    }
+  },
   signup: (req, res) => {
     // console.log("회원가입 리퀘스트", req.body);
     let { name, email, password } = req.body;
@@ -16,8 +55,12 @@ module.exports = {
       let arg = {
         name: name,
         email: email,
-        password: password
+        password: crypto
+          .createHmac("sha512", process.env.SRV_CRYPTO_SALT)
+          .update(password)
+          .digest("base64")
       };
+      console.log("아규먼트", arg);
       userModel.signup(arg, (err, result) => {
         if (err) {
           // console.log('회원가입에러',err);
@@ -51,7 +94,10 @@ module.exports = {
     } else {
       let arg = {
         email: email,
-        password: password
+        password: crypto
+          .createHmac("sha512", process.env.SRV_CRYPTO_SALT)
+          .update(password)
+          .digest("base64")
       };
       userModel.signin(arg, (err, result) => {
         if (err) {

@@ -68,7 +68,7 @@ module.exports = {
         .status(401)
         .send({ error: { status: 401, message: "로그인 상태가 아닙니다." } });
     }
-    // else if (!req.body) {
+    // else if (!req.body.newBoard) {
     //   return res.status(400).send({
     //     error: {
     //       status: 400,

@@ -1,6 +1,16 @@
 const connection = require("../database/dbConnection");
 
 module.exports = {
+  checkEmail: ({ email }, callback) => {
+    const query = `SELECT id FROM users WHERE email='${email}';`;
+    connection.query(query, (err, result) => {
+      if (err) {
+        return callback(err, null);
+      } else {
+        return callback(null, result);
+      }
+    });
+  },
   signup: ({ name, email, password }, callback) => {
     const query = `INSERT INTO users (name, email, password) VALUES ( '${name}', '${email}','${password}');`;
     connection.query(query, (err, result) => {
