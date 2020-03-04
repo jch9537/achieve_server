@@ -12,7 +12,7 @@ module.exports = {
     });
   },
   signup: ({ name, email, password }, callback) => {
-    const query = `INSERT INTO users (name, email, password) VALUES ( '${name}', '${email}','${password}');`;
+    const query = `INSERT INTO users (name, email, password, oauth_signup) VALUES ( '${name}', '${email}','${password}', false);`;
     connection.query(query, (err, result) => {
       if (err) {
         return callback(err, null);
