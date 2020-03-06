@@ -45,7 +45,7 @@ module.exports = {
     });
   },
   get: ({ id }, callback) => {
-    let sql = `SELECT id, name FROM users WHERE id=${id}`;
+    let sql = `SELECT id, name, oauth_signup FROM users WHERE id=${id}`;
     connection.query(sql, (err, result) => {
       if (err) {
         return callback(err, null);
